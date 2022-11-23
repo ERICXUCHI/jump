@@ -3,7 +3,7 @@ import argparse
 
 import torch
 import torch.optim as optim
-from torch.utils.tensorboard import SummaryWriter
+# from torch.utils.tensorboard import SummaryWriter
 from torchvision import transforms
 
 from my_dataset import MyDataSet
@@ -17,7 +17,7 @@ def main(args):
     if os.path.exists("./weights") is False:
         os.makedirs("./weights")
 
-    tb_writer = SummaryWriter()
+#     tb_writer = SummaryWriter()
 
     train_images_path, train_images_label, val_images_path, val_images_label = read_split_data(args.data_path)
 
@@ -68,15 +68,15 @@ def main(args):
         model = nn.DataParallel(model)
     model.to(device)
 
-    if args.weights != "":
-        assert os.path.exists(args.weights), "weights file: '{}' not exist.".format(args.weights)
-        # weights_dict = torch.load(args.weights, map_location=device)["model"]
-        weights_dict = torch.load(args.weights, map_location=device)
-        # 删除有关分类类别的权重
-        # for k in list(weights_dict.keys()):
-        #     if "head" in k:
-        #         del weights_dict[k]
-        print(model.load_state_dict(weights_dict, strict=False))
+#     if args.weights != "":
+#         assert os.path.exists(args.weights), "weights file: '{}' not exist.".format(args.weights)
+#         # weights_dict = torch.load(args.weights, map_location=device)["model"]
+#         weights_dict = torch.load(args.weights, map_location=device)
+#         # 删除有关分类类别的权重
+#         # for k in list(weights_dict.keys()):
+#         #     if "head" in k:
+#         #         del weights_dict[k]
+#         print(model.load_state_dict(weights_dict, strict=False))
 
     if args.freeze_layers:
         for name, para in model.named_parameters():
@@ -104,12 +104,12 @@ def main(args):
                                      device=device,
                                      epoch=epoch)
 
-        tags = ["train_loss", "train_acc", "val_loss", "val_acc", "learning_rate"]
-        tb_writer.add_scalar(tags[0], train_loss, epoch)
-        tb_writer.add_scalar(tags[1], train_acc, epoch)
-        tb_writer.add_scalar(tags[2], val_loss, epoch)
-        tb_writer.add_scalar(tags[3], val_acc, epoch)
-        tb_writer.add_scalar(tags[4], optimizer.param_groups[0]["lr"], epoch)
+#         tags = ["train_loss", "train_acc", "val_loss", "val_acc", "learning_rate"]
+#         tb_writer.add_scalar(tags[0], train_loss, epoch)
+#         tb_writer.add_scalar(tags[1], train_acc, epoch)
+#         tb_writer.add_scalar(tags[2], val_loss, epoch)
+#         tb_writer.add_scalar(tags[3], val_acc, epoch)
+#         tb_writer.add_scalar(tags[4], optimizer.param_groups[0]["lr"], epoch)
 
         torch.save(model.state_dict(), "./weights/model-{}.pth".format(epoch))
 
